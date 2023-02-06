@@ -15,9 +15,8 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('phone_name');
+            $table->string('phone_name')->unique();
             $table->bigInteger('seller_id')->unsigned()->index()->nullable();
-            
             $table->string('display_size');
             $table->integer('quantity');
             $table->integer('cost');

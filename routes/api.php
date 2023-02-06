@@ -18,6 +18,8 @@ use App\Http\Controllers\SellerController;
 
 Route::group(['prefix' => 'product'], function(){
     Route::post('/set_data', [ProductController::class, 'setData']);
+
+    Route::get('/get_data/{id}', [ProductController::class, 'getData']);
 });
 
 Route::group(['prefix' => 'seller'], function(){

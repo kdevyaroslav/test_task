@@ -11,15 +11,15 @@ class SellerController extends Controller
 {
     public function setData(Request $request){
         $validator = Validator::make($request->all(), [
-            'seller_name' => 'required|string',
+            'seller_name' => 'required|string|unique:sellers,seller_name',
         ]);
 
         if($validator->fails()){
             return Helper::responseErrors($validator);
         }
 
-        Seller::create($request->all());
+        $seller = Seller::create($request->all());
 
-        return Helper::response(true, 'Seller successfully created');
+        return Helper::response(true, ['id' => $seller->id]);
     }
 }
