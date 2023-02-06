@@ -20,6 +20,8 @@ Route::group(['prefix' => 'product'], function(){
     Route::post('/set_data', [ProductController::class, 'setData']);
 
     Route::get('/get_data/{id}', [ProductController::class, 'getData']);
+
+    Route::post('/update_data_bulk', [ProductController::class, 'updateData']);
 });
 
 Route::group(['prefix' => 'seller'], function(){

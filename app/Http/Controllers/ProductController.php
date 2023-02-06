@@ -41,4 +41,20 @@ class ProductController extends Controller
 
         return Helper::response(true, $data);
     }
+
+    public function updateData(Request $request){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'exists:products,id',
+            'cost' => 'required|integer'
+        ]);
+
+        if($validator->fails()){
+            return Helper::responseErrors($validator);
+        }
+
+        $t = Product::whereIn('id', $request->post('ids'))->update(['cost' => $request->post('cost')]);
+
+        return Helper::response(true, 'Successfully updated');
+    }
 }
