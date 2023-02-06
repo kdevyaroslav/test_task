@@ -6,16 +6,17 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Helper;
 use App\Models\Product;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
     public function setData(Request $request){
         $validator = Validator::make($request->all(), [
             'phone_name' => 'required|string|unique:products,phone_name',
-            'seller_id'  => 'required|exists:sellers,id|integer',
-            'display_size' => 'required|integer',
-            'quantity' => 'required|integer',
-            'cost' => 'required|integer'
+            'seller_id'  => 'required|exists:sellers,id',
+            'display_size' => 'required|integer|gt:0',
+            'quantity' => 'required|integer|gt:0',
+            'cost' => 'required|integer|gt:0'
         ]);
 
         if($validator->fails()){
@@ -29,7 +30,7 @@ class ProductController extends Controller
 
     public function getData(Request $request, $id){
         $validator = Validator::make(['id' => $id], [
-            'id' => 'required|integer|exists:sellers,id',
+            'id' => 'required|exists:sellers,id',
         ]);
 
         if($validator->fails()){
@@ -44,17 +45,42 @@ class ProductController extends Controller
 
     public function updateData(Request $request){
         $validator = Validator::make($request->all(), [
-            'ids' => 'required|array',
-            'ids.*' => 'exists:products,id',
-            'cost' => 'required|integer'
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:products,id|distinct',
+            'cost' => 'required|integer|gt:0'
         ]);
 
         if($validator->fails()){
             return Helper::responseErrors($validator);
         }
 
-        $t = Product::whereIn('id', $request->post('ids'))->update(['cost' => $request->post('cost')]);
+        Product::whereIn('id', $request->post('ids'))->update(['cost' => $request->post('cost')]);
 
         return Helper::response(true, 'Successfully updated');
+    }
+
+    public function bulkInsert(Request $request){
+        $validator = Validator::make($request->all(), [
+            'products' => 'required|array|min:1',
+            'products.*.phone_name' => 'required|string|unique:products,phone_name|distinct',
+            'products.*.seller_id' => 'required|exists:sellers,id',
+            'products.*.display_size' => 'required|integer|gt:0',
+            'products.*.quantity' => 'required|integer|gt:0',
+            'products.*.cost' => 'required|integer|gt:0'
+        ]);
+
+        if($validator->fails()){
+            return Helper::responseErrors($validator);
+        }
+
+        $products = array_map(function($product) { // it is not for and foreach :)
+            $product['created_at'] = Carbon::now();
+            $product['updated_at'] = Carbon::now();
+            return $product;
+        }, $request->post('products'));
+
+        Product::insert($products);
+
+        return Helper::response(true, 'Successfully inserted');
     }
 }

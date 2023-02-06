@@ -11,6 +11,8 @@ class Seller extends Model
 
     protected $table = 'sellers';
 
+    public $timestamps = true;
+
     protected $fillable = [
         'id',
         'seller_name',

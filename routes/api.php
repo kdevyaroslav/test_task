@@ -24,6 +24,9 @@ Route::group(['prefix' => 'product'], function(){
     Route::post('/update_data_bulk', [ProductController::class, 'updateData']);
 });
 
+
+Route::post('/bulk_insert', [ProductController::class, 'bulkInsert']);
+
 Route::group(['prefix' => 'seller'], function(){
     Route::post('/set_data', [SellerController::class, 'setData']);
 });

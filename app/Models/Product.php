@@ -11,6 +11,8 @@ class Product extends Model
 
     protected $table = 'products';
 
+    public $timestamps = true;
+
     protected $fillable = [
         'id',
         'phone_name',
