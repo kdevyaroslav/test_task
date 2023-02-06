@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\ParserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,10 @@ Route::group(['prefix' => 'product'], function(){
 
 
 Route::post('/bulk_insert', [ProductController::class, 'bulkInsert']);
+
+Route::group(['prefix' => 'utilities'], function(){
+    Route::get('/parser', [ParserController::class, 'rozetkaParse']);
+});
 
 Route::group(['prefix' => 'seller'], function(){
     Route::post('/set_data', [SellerController::class, 'setData']);
